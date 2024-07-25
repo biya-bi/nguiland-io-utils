@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,13 +39,13 @@ class EnvFileReaderTest {
     @Test
     void read_EnvFileOnlyContainsBlankLines_ThrowIllegalStateException() throws IOException {
         var file = createTempFile();
-        var strings = new ArrayList<String>();
+        var lines = new ArrayList<String>();
         // Add only blank lines
-        strings.add(StringUtils.EMPTY);
-        strings.add(System.lineSeparator());
-        strings.add("    ");
+        lines.add(StringUtils.EMPTY);
+        lines.add(System.lineSeparator());
+        lines.add("    ");
 
-        write(file, strings);
+        write(file, lines);
 
         try (var envMockedStatic = mockStatic(Env.class)) {
             envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(file.getPath());
@@ -70,34 +71,34 @@ class EnvFileReaderTest {
     @Test
     void read_EnvFileIsNotEmpty_ReturnContent() throws IOException {
         var file = createTempFile();
-        var strings = generateRandomStrings(2);
+        var lines = generateRandomStrings(2);
 
-        write(file, strings);
+        write(file, lines);
 
         try (var envMockedStatic = mockStatic(Env.class)) {
             envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(file.getPath());
 
             var content = EnvFileReader.read(ENCRYPT_KEY_FILE, true);
 
-            assertEquals(join(strings), content);
+            assertEquals(join(lines), content);
         }
     }
 
     @Test
     void read_FirstLineIsBlankAndSecondLineIsNotBlank_ReturnContent() throws IOException {
         var file = createTempFile();
-        var strings = generateRandomStrings(1);
+        var lines = generateRandomStrings(1);
         // Make the first line blank
-        strings.add(0, StringUtils.EMPTY);
+        lines.add(0, StringUtils.EMPTY);
 
-        write(file, strings);
+        write(file, lines);
 
         try (var envMockedStatic = mockStatic(Env.class)) {
             envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(file.getPath());
 
             var content = EnvFileReader.read(ENCRYPT_KEY_FILE, true);
 
-            assertEquals(join(strings), content);
+            assertEquals(join(lines), content);
         }
     }
 
@@ -149,10 +150,10 @@ class EnvFileReaderTest {
         return file;
     }
 
-    private void write(File file, List<String> strings) throws IOException {
+    private void write(File file, List<String> lines) throws IOException {
         try (var writer = new BufferedWriter(new FileWriter(file, true))) {
-            for (var string : strings) {
-                writer.append(string);
+            for (var line : lines) {
+                writer.append(line);
                 writer.newLine();
             }
             writer.flush();
@@ -160,11 +161,8 @@ class EnvFileReaderTest {
     }
 
     private List<String> generateRandomStrings(int count) {
-        List<String> strings = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            strings.add(RandomStringUtils.random(10, true, true));
-        }
-        return strings;
+        return IntStream.rangeClosed(1, count).mapToObj(i -> RandomStringUtils.random(10, true, true))
+                .collect(Collectors.toList());
     }
 
     private String join(List<String> lines) {
