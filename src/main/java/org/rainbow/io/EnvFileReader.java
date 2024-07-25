@@ -17,7 +17,10 @@ public final class EnvFileReader {
     private EnvFileReader() {
     }
 
-    // Made package-private for unit testing
+    public static String read(String envName) throws IOException {
+        return read(envName, true);
+    }
+
     public static String read(String envName, boolean required) throws IOException {
         String fileName = Env.get(envName);
 

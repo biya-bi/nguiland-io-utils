@@ -127,6 +127,22 @@ class EnvFileReaderTest {
         }
     }
 
+    @Test
+    void read_OnlyEnvNameIsGiven_ReturnContent() throws IOException {
+        var file = createTempFile();
+        var lines = generateRandomStrings(2);
+
+        write(file, lines);
+
+        try (var envMockedStatic = mockStatic(Env.class)) {
+            envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(file.getPath());
+
+            var content = EnvFileReader.read(ENCRYPT_KEY_FILE);
+
+            assertEquals(join(lines), content);
+        }
+    }
+
     private File createTempFile() throws IOException {
         var file = File.createTempFile(String.valueOf(System.currentTimeMillis()), ".tmp");
         file.deleteOnExit();
