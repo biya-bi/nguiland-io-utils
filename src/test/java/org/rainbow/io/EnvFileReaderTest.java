@@ -24,17 +24,17 @@ import org.rainbow.environment.Env;
 
 class EnvFileReaderTest {
 
-    private static final String ENCRYPT_KEY_FILE = "ENCRYPT_KEY_FILE";
-
     @Test
     void read_EnvFileIsNotSetAndRequiredIsTrue_ThrowIllegalStateException() {
         try (var envMockedStatic = mockStatic(Env.class)) {
+            var envNameFile = "ENV_NAME_FILE";
+
             // Emulate unset environment variable by returning null
-            envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(null);
+            envMockedStatic.when(() -> Env.get(envNameFile)).thenReturn(null);
 
-            var e = assertThrows(IllegalStateException.class, () -> EnvFileReader.read(ENCRYPT_KEY_FILE, true));
+            var e = assertThrows(IllegalStateException.class, () -> EnvFileReader.read(envNameFile, true));
 
-            assertEquals(String.format(ENV_FILE_NOT_SET, ENCRYPT_KEY_FILE), e.getMessage());
+            assertEquals(String.format(ENV_FILE_NOT_SET, envNameFile), e.getMessage());
         }
     }
 
@@ -50,9 +50,11 @@ class EnvFileReaderTest {
         write(file, lines);
 
         try (var envMockedStatic = mockStatic(Env.class)) {
-            envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(file.getPath());
+            var envNameFile = "ENV_NAME_FILE";
 
-            var e = assertThrows(IllegalStateException.class, () -> EnvFileReader.read(ENCRYPT_KEY_FILE, true));
+            envMockedStatic.when(() -> Env.get(envNameFile)).thenReturn(file.getPath());
+
+            var e = assertThrows(IllegalStateException.class, () -> EnvFileReader.read(envNameFile, true));
 
             assertEquals(String.format(ENV_FILE_EMPTY, file.getPath()), e.getMessage());
         }
@@ -61,10 +63,12 @@ class EnvFileReaderTest {
     @Test
     void read_EnvFileIsNotSetAndRequiredIsFalse_ReturnEmptyString() throws IOException {
         try (var envMockedStatic = mockStatic(Env.class)) {
-            // Emulate unset environment variable by returning null
-            envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(null);
+            var envNameFile = "ENV_NAME_FILE";
 
-            var content = EnvFileReader.read(ENCRYPT_KEY_FILE, false);
+            // Emulate unset environment variable by returning null
+            envMockedStatic.when(() -> Env.get(envNameFile)).thenReturn(null);
+
+            var content = EnvFileReader.read(envNameFile, false);
 
             assertEquals(StringUtils.EMPTY, content);
         }
@@ -78,9 +82,11 @@ class EnvFileReaderTest {
         write(file, lines);
 
         try (var envMockedStatic = mockStatic(Env.class)) {
-            envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(file.getPath());
+            var envNameFile = "ENV_NAME_FILE";
 
-            var content = EnvFileReader.read(ENCRYPT_KEY_FILE, true);
+            envMockedStatic.when(() -> Env.get(envNameFile)).thenReturn(file.getPath());
+
+            var content = EnvFileReader.read(envNameFile, true);
 
             assertEquals(join(lines), content);
         }
@@ -96,9 +102,11 @@ class EnvFileReaderTest {
         write(file, lines);
 
         try (var envMockedStatic = mockStatic(Env.class)) {
-            envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(file.getPath());
+            var envNameFile = "ENV_NAME_FILE";
 
-            var content = EnvFileReader.read(ENCRYPT_KEY_FILE, true);
+            envMockedStatic.when(() -> Env.get(envNameFile)).thenReturn(file.getPath());
+
+            var content = EnvFileReader.read(envNameFile, true);
 
             assertEquals(join(lines), content);
         }
@@ -109,9 +117,11 @@ class EnvFileReaderTest {
         var file = createTempFile();
 
         try (var envMockedStatic = mockStatic(Env.class)) {
-            envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(file.getPath());
+            var envNameFile = "ENV_NAME_FILE";
 
-            var e = assertThrows(IllegalStateException.class, () -> EnvFileReader.read(ENCRYPT_KEY_FILE, true));
+            envMockedStatic.when(() -> Env.get(envNameFile)).thenReturn(file.getPath());
+
+            var e = assertThrows(IllegalStateException.class, () -> EnvFileReader.read(envNameFile, true));
 
             assertEquals(String.format(ENV_FILE_EMPTY, file.getPath()), e.getMessage());
         }
@@ -122,9 +132,11 @@ class EnvFileReaderTest {
         var file = createTempFile();
 
         try (var envMockedStatic = mockStatic(Env.class)) {
-            envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(file.getPath());
+            var envNameFile = "ENV_NAME_FILE";
 
-            var content = EnvFileReader.read(ENCRYPT_KEY_FILE, false);
+            envMockedStatic.when(() -> Env.get(envNameFile)).thenReturn(file.getPath());
+
+            var content = EnvFileReader.read(envNameFile, false);
 
             assertEquals(StringUtils.EMPTY, content);
         }
@@ -138,9 +150,11 @@ class EnvFileReaderTest {
         write(file, lines);
 
         try (var envMockedStatic = mockStatic(Env.class)) {
-            envMockedStatic.when(() -> Env.get(ENCRYPT_KEY_FILE)).thenReturn(file.getPath());
+            var envNameFile = "ENV_NAME_FILE";
+            
+            envMockedStatic.when(() -> Env.get(envNameFile)).thenReturn(file.getPath());
 
-            var content = EnvFileReader.read(ENCRYPT_KEY_FILE);
+            var content = EnvFileReader.read(envNameFile);
 
             assertEquals(join(lines), content);
         }
@@ -157,11 +171,11 @@ class EnvFileReaderTest {
 
         var file1 = createTempFile();
         var value1 = RandomStringUtils.random(10);
-        write(file1, Arrays.asList(value1));
+        write(file1, value1);
 
         var file2 = createTempFile();
         var value2 = RandomStringUtils.random(10);
-        write(file2, Arrays.asList(value2));
+        write(file2, value2);
 
         try (var envMockedStatic = mockStatic(Env.class)) {
             envMockedStatic.when(() -> Env.get(envName1File)).thenReturn(file1.getPath());
@@ -190,10 +204,14 @@ class EnvFileReaderTest {
         }
     }
 
+    private void write(File file, String... lines) throws IOException {
+        write(file, Arrays.asList(lines));
+    }
+
     private List<String> generateRandomStrings(int count) {
         return IntStream.rangeClosed(1, count).mapToObj(i -> RandomStringUtils.random(10, true, true))
                 .collect(Collectors.toList());
-    }
+    } 
 
     private String join(List<String> lines) {
         return lines.stream().collect(Collectors.joining(System.lineSeparator()));
