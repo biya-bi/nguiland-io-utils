@@ -3,6 +3,7 @@ package org.rainbow.io;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +41,12 @@ public final class EnvFileReader {
                 throw new IllegalStateException(String.format(ENV_FILE_EMPTY, fileName));
             }
             return StringUtils.EMPTY;
+        }
+    }
+
+    public static void readAndSet(Map<String, String> envNamesByProp) throws IOException {
+        for (Map.Entry<String, String> entry : envNamesByProp.entrySet()) {
+            System.setProperty(entry.getValue(), read(entry.getKey()));
         }
     }
 

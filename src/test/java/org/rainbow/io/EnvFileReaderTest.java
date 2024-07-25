@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -141,6 +143,34 @@ class EnvFileReaderTest {
             var content = EnvFileReader.read(ENCRYPT_KEY_FILE);
 
             assertEquals(join(lines), content);
+        }
+    }
+
+    @Test
+    void readAndSet_ByEnvNamesByPropAreGiven_ReadEnvFileAndSetSystemProperties() throws IOException {
+        var envName1File = "ENV_NAME_1_FILE";
+        var envName2File = "ENV_NAME_2_FILE";
+        var prop1 = "prop1";
+        var prop2 = "prop2";
+
+        var envNamesByProp = Map.of(envName1File, prop1, envName2File, prop2);
+
+        var file1 = createTempFile();
+        var value1 = RandomStringUtils.random(10);
+        write(file1, Arrays.asList(value1));
+
+        var file2 = createTempFile();
+        var value2 = RandomStringUtils.random(10);
+        write(file2, Arrays.asList(value2));
+
+        try (var envMockedStatic = mockStatic(Env.class)) {
+            envMockedStatic.when(() -> Env.get(envName1File)).thenReturn(file1.getPath());
+            envMockedStatic.when(() -> Env.get(envName2File)).thenReturn(file2.getPath());
+
+            EnvFileReader.readAndSet(envNamesByProp);
+
+            assertEquals(value1, System.getProperty(prop1));
+            assertEquals(value2, System.getProperty(prop2));
         }
     }
 
