@@ -1,10 +1,10 @@
-package org.rainbow.io;
+package org.nguiland.io;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mockStatic;
-import static org.rainbow.io.EnvFileReader.ENV_FILE_EMPTY;
-import static org.rainbow.io.EnvFileReader.ENV_FILE_NOT_SET;
+import static org.nguiland.io.EnvFileReader.ENV_FILE_EMPTY;
+import static org.nguiland.io.EnvFileReader.ENV_FILE_NOT_SET;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.rainbow.environment.Env;
+import org.nguiland.environment.Env;
 
 class EnvFileReaderTest {
 

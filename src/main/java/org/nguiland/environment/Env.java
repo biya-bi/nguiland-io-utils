@@ -1,4 +1,4 @@
-package org.rainbow.environment;
+package org.nguiland.environment;
 
 public final class Env {
 

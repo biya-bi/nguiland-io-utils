@@ -1,4 +1,4 @@
-package org.rainbow.io;
+package org.nguiland.io;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.rainbow.environment.Env;
+import org.nguiland.environment.Env;
 
 public final class EnvFileReader {
 
