@@ -7,16 +7,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.nguiland.environment.Env;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class EnvFileReader {
 
     // Fields made package-private for unit testing
     static final String ENV_FILE_NOT_SET = "An environment variable with name '%s' must be set to a non-blank value";
     static final String ENV_FILE_EMPTY = "The file with path '%s' must contain a non-blank line";
-
-    private EnvFileReader() {
-    }
 
     public static String read(String envName) throws IOException {
         return read(envName, true);
@@ -47,6 +47,14 @@ public final class EnvFileReader {
     public static void readAndSet(Map<String, String> envNamesByProp) throws IOException {
         for (Map.Entry<String, String> entry : envNamesByProp.entrySet()) {
             System.setProperty(entry.getValue(), read(entry.getKey()));
+        }
+    }
+
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    static final class Env {
+
+        static String get(String name) {
+            return System.getenv(name);
         }
     }
 

@@ -20,7 +20,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.nguiland.environment.Env;
+import org.nguiland.io.EnvFileReader.Env;
 
 class EnvFileReaderTest {
 
