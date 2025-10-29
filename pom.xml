@@ -9,8 +9,8 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>org.nguiland.io</groupId>
-  <artifactId>io-utils</artifactId>
-  <name>io-utils</name>
+  <artifactId>nguiland-io-utils</artifactId>
+  <name>nguiland-io-utils</name>
   <description>This library contains utility classes for handling common input/output operations.</description>
 
   <dependencies>
